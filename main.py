@@ -1,6 +1,7 @@
 import argparse, sys, socket
 import multiprocessing
 import traceback
+import json
 
 class Client:
     def __init__(self):
@@ -23,7 +24,7 @@ class Client:
         self.nick = args.nick
 
         ip = args.ip.split(":")
-        ip.append(6969)
+        ip.append(6968)
 
         self.ip = ip[0]
         try:
@@ -33,7 +34,6 @@ class Client:
             sys.exit()
 
     def start(self):
-        
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((self.ip, self.port))
 
@@ -43,7 +43,8 @@ class Client:
             while True:
                 message = input("")
                 if message.strip():
-                    self.socket.send((f"<{self.nick}> " + message).encode())
+                    message = {"user": self.nick, "msg": message}                    
+                    self.socket.send(json.dumps(message, ensure_ascii=False).encode())
         except:
             traceback.print_exc()
             self.request.terminate()
@@ -63,11 +64,16 @@ class Client:
             
             try:
                 message = message.decode()
+                try:
+                    message = json.loads(message.strip())
+                except:
+                    message = {"user": "V1-Message", "msg": message}
+                    
             except:
-                self.messages.append("Message was recieved, but the contents cannot be decoded :(")
+                self.messages.append({"user": "[CLIENT]", "msg": "Message was recieved, but the contents cannot be decoded :("})
             else:
-                self.messages.append(message.strip())
-            print("> " + str(self.messages[-1]), end="\n", flush=True)
+                self.messages.append(message)
+            print(f'<{self.messages[-1]["user"]}> ' + self.messages[-1]["msg"], end="\n", flush=True)
 
 if __name__ == "__main__":
     cli = Client()

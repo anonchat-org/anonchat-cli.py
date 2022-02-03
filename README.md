@@ -1,5 +1,5 @@
 # anonchat-cli.py
-Python implementation of anonchat CLI
+Python implementation of anonchat CLI [V2]
 
 ## Usage
 ```
