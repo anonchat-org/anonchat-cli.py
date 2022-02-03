@@ -13,7 +13,7 @@ class Client:
     def parser(self):
         parser = argparse.ArgumentParser(
         prog="anonchat-cli",
-        description = "Connect to the anonchat",
+        description = "Connect to the anonchat V2",
         epilog="---- Oh, hello there!")
  
         parser.add_argument("ip", help = "IP of anonchat-server", type=str)
